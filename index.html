@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#243E6B" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Food Diary" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <title>YB Family Food Diary</title>
+</head>
+<body class="signed-out">
+  <div id="app" class="app" data-view="list">
+    <!-- 1열: 식사 기록 목록 -->
+    <section class="pane pane-list" aria-label="식사 기록 목록">
+      <header class="pane-head">
+        <span class="brand"><img class="brand-icon" src="icons/icon.svg" alt="" width="26" height="26" />YB Family Food Diary</span>
+        <span class="grow"></span>
+        <button class="btn-primary" id="btn-add" title="식사 기록 추가 (PC: 사진 붙여넣기·끌어놓기도 가능)">＋ 기록</button>
+        <button class="icon-btn" id="btn-menu" title="메뉴" aria-label="메뉴">⋯</button>
+      </header>
+
+      <div class="filters">
+        <select id="sel-month" class="sel" title="기간"></select>
+        <input id="search" class="search" type="search" placeholder="제목·내용·작성자 검색" />
+      </div>
+      <div class="chips" id="chips" role="tablist" aria-label="끼니"></div>
+      <div class="today" id="today" aria-label="오늘 기록 현황"></div>
+
+      <ul id="list" class="list"></ul>
+
+      <footer class="pane-foot">
+        <span id="sync" class="sync" data-s="pending">● 연결 중…</span>
+        <span id="account" class="account"></span>
+        <span id="version" class="version"></span>
+      </footer>
+    </section>
+
+    <!-- 2열: 상세 (PC: 사진 왼쪽·기록 오른쪽 / 휴대폰: 사진 위·기록 아래) -->
+    <main class="pane pane-detail" aria-label="식사 기록 상세">
+      <header class="pane-head">
+        <button class="icon-btn only-narrow" data-go="list" aria-label="목록으로">‹</button>
+        <h1 id="detail-title">식사 기록</h1>
+        <span id="save-state" class="save-state"></span>
+        <button class="icon-btn" id="btn-rotate" title="사진 오른쪽으로 90° 돌리기" disabled>↻</button>
+        <button class="icon-btn" id="btn-photo" title="사진 바꾸기 (촬영·앨범)" disabled>📷</button>
+        <button class="icon-btn" id="btn-delete" title="기록 삭제" disabled>🗑</button>
+      </header>
+      <div class="detail-wrap">
+        <div id="detail" class="detail" hidden>
+          <div class="photo" id="photo">
+            <img id="photo-img" alt="음식 사진" hidden />
+            <div class="photo-empty" id="photo-empty"><p>사진을 불러오는 중…</p></div>
+            <div class="busy" id="busy" hidden><div class="spinner"></div><p id="busy-msg">사진 줄이는 중…</p></div>
+          </div>
+
+          <form class="fields" id="fields" autocomplete="off" onsubmit="return false">
+            <div class="base-title"><span class="slot-badge" id="f-slot"></span><b id="f-base"></b></div>
+            <label class="field"><span>제목 <em>(선택 — 쓰면 목록에 함께 보입니다)</em></span><input type="text" id="f-title" placeholder="예: 엄마표 김치찌개" maxlength="40" /></label>
+            <div class="field"><span>일시 <em>(올린 시각이 자동 기록, 수정 가능)</em></span>
+              <div class="when"><input type="date" id="f-date" /><input type="time" id="f-time" /></div>
+            </div>
+            <label class="field field-memo"><span>내용</span><textarea id="f-memo" rows="5" placeholder="무엇을, 어디서, 누구와 먹었는지"></textarea></label>
+            <p class="meta" id="f-meta"></p>
+            <p class="readonly-note" id="f-ro" hidden>다른 가족이 올린 기록입니다. 보기만 할 수 있습니다.</p>
+          </form>
+        </div>
+        <div id="empty-detail" class="placeholder">
+          <img src="icons/icon.svg" alt="" width="64" height="64" />
+          <p class="ph-title">기록을 선택하거나 추가하세요</p>
+          <p><b>＋ 기록</b>을 누르거나, 사진을 이 창에 <b>붙여넣기(Ctrl+V)</b>·<b>끌어놓기</b> 하세요.<br />하루 아침·점심·저녁 끼니마다 1건, 사진 1장씩 올릴 수 있습니다.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <button class="fab" id="fab" aria-label="식사 기록 추가">＋</button>
+
+  <input id="file-camera" type="file" accept="image/*" capture="environment" hidden />
+  <input id="file-pick" type="file" accept="image/*" hidden />
+  <input id="file-camera2" type="file" accept="image/*" capture="environment" hidden />
+  <input id="file-pick2" type="file" accept="image/*" hidden />
+
+  <div id="login" class="login">
+    <div class="login-card">
+      <img src="icons/icon.svg" alt="" width="72" height="72" />
+      <h2>YB Family Food Diary</h2>
+      <p>가족 Google 계정으로 로그인하면<br />PC·휴대폰에서 같은 식사 일기를 함께 봅니다.</p>
+      <button id="btn-signin" class="btn-primary btn-signin">Google 계정으로 로그인</button>
+      <p id="login-msg" class="login-msg"></p>
+    </div>
+  </div>
+
+  <div id="pop" class="pop" hidden></div>
+  <div id="viewer" class="viewer" hidden><img id="viewer-img" alt="" /><button class="viewer-x" aria-label="닫기">✕</button></div>
+  <div id="drop" class="drop" hidden><p>여기에 놓으면 식사 기록으로 추가됩니다</p></div>
+  <div id="toast" class="toast" hidden></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

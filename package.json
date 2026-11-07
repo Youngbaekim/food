@@ -1,0 +1,18 @@
+{
+  "name": "food-diary",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "YB Family Food Diary — 가족 식사 일기",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.3.6"
+  },
+  "dependencies": {
+    "firebase": "^13.2.0"
+  }
+}
